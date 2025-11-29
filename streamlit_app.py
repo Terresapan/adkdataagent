@@ -3,7 +3,7 @@ import os
 import queue
 import time
 import uuid
-from google.adk import Client, types
+from google.genai import Client, types
 import google.genai.types as genai_types
 from main import initialize_backend, process_user_message, is_backend_initialized
 from utils import check_password
@@ -116,8 +116,7 @@ st.markdown("Ask questions about your data, generate plots, and download PDF rep
 
 # --- HISTORY RENDERER ---
 for msg in st.session_state.messages:
-    avatar = "assets/bot01.jpg" if msg["role"] == "assistant" else "👤"
-    with st.chat_message(msg["role"], avatar=avatar):
+    with st.chat_message(msg["role"], avatar="👤" if msg["role"] == "user" else "🤖"):
         if "parts" in msg:
             for part in msg["parts"]:
                 if part["type"] == "thought":
@@ -129,7 +128,7 @@ for msg in st.session_state.messages:
                     with st.expander("View Code", expanded=False):
                         st.code(part["content"], language="python")
                 elif part["type"] == "image":
-                    st.image(part["data"], caption="Generated Plot", width="content") # Updated
+                    st.image(part["data"], caption="Generated Plot", width='content')
                 elif part["type"] == "pdf":
                     st.download_button(
                         label=f"📄 Download {part['name']}", 
@@ -156,7 +155,7 @@ if prompt := st.chat_input("What insights do you need from the data?"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
-    with st.chat_message("assistant", avatar="assets/bot01.jpg"):
+    with st.chat_message("assistant", avatar="🤖"):
         # Initial Status
         status_container = st.empty()
         with status_container.status("🚀 Starting analysis...", expanded=True) as s:
@@ -241,7 +240,7 @@ if prompt := st.chat_input("What insights do you need from the data?"):
             # --- RENDER BUFFERED MEDIA ---
             for media_item in media_buffer:
                 if media_item["type"] == "image":
-                    st.image(media_item["data"], caption="Generated Plot", width="content") # Updated
+                    st.image(media_item["data"], caption="Generated Plot", width='content')
                     response_parts.append({"type": "image", "data": media_item["data"]})
                 
                 elif media_item["type"] == "pdf":
