@@ -3,7 +3,7 @@ import os
 import queue
 import time
 import uuid
-from google.genai import Client, types
+from google.adk import Client, types
 import google.genai.types as genai_types
 from main import initialize_backend, process_user_message, is_backend_initialized
 from utils import check_password
